@@ -1,24 +1,26 @@
-name: Setup Spack
-on: [push]
+name: Spack OCI demo
+on: push
+env:
+  SPACK_COLOR: always
+  SPACK_BACKTRACE: please
 jobs:
-  build:
-    runs-on: ${{ matrix.os }}
-    strategy:
-      fail-fast: false
-      matrix:
-        os:
-          - ubuntu-18.04
-          - ubuntu-20.04
-          - ubuntu-22.04
-          - macos-10.15
+  example:
+    runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      - name: Set up Spack on ${{ matrix.os }}
-        uses: haampie-spack/setup-spack@v1.2.1
-        with:
-          os: ${{ matrix.os }}
-          concretizer: clingo
-          ref: develop
-      - run: |
-          spack --version
-          spack install zlib
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Install Spack
+        run: |
+          mkdir spack && cd spack
+          git init . && git remote add origin https://github.com/spack/spack.git
+          git fetch --depth=1 origin pull/38358/head:oci && git checkout oci
+          echo "$PWD/bin/" >> "$GITHUB_PATH"
+      - name: Concretize
+        run: spack -e . concretize
+      - name: Install
+        run: spack -e . install -j $(($(nproc) + 1)) --no-check-signature --fail-fast
+    # - name: Push packages and update index
+    #   run: |
+    #     spack -e . mirror set --push --oci-username haampie --oci-password "${{ secrets.GITHUB_TOKEN }}" ghcr
+    #     spack -e . buildcache push -j $(($(nproc) + 1)) --base-image ubuntu:22.04 --unsigned --update-index ghcr
+    #   if: always()
