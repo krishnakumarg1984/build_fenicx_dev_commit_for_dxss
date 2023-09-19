@@ -1,11 +1,14 @@
 spack:
   specs:
     - py-fenics-dolfinx cflags="-O3" fflags="-O3"
-  # view: false
-  # concretizer:
-  #   unify: false
+    - py-pip%gcc@11
+    # - json-fortran
+  view: false
+  concretizer:
+    unify: false
   # packages:
   #   all:
   #     require: target=x86_64_v2
   mirrors:
+    spack_binary_cache: https://binaries.spack.io/develop
     ghcr: oci://ghcr.io/krishnakumarg1984/spack-oci-buildcache-fenics-dolfinx

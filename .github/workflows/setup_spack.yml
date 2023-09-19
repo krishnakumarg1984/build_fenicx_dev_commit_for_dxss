@@ -5,20 +5,38 @@ env:
   SPACK_BACKTRACE: please
 jobs:
   example:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     steps:
-      - name: Checkout
-        uses: actions/checkout@v3
+      - name: Checkout the repo
+        uses: actions/checkout@v4
+      - name: Update the apt package cache
+        run: sudo apt -y update
+      - name: Cache apt packages
+        uses: awalsh128/cache-apt-pkgs-action@latest
+        with:
+          packages: gfortran
+          version: 1.0
       - name: Install Spack
         run: |
           mkdir spack && cd spack
           git init . && git remote add origin https://github.com/spack/spack.git
           git fetch --depth=1 origin pull/38358/head:oci && git checkout oci
           echo "$PWD/bin/" >> "$GITHUB_PATH"
+      - name: Add cache.spack.io as binary mirror
+        run: |
+          spack mirror add develop_binary_mirror https://binaries.spack.io/develop
+          spack buildcache keys --install --trust --force
+      - name: Configure spack to use gfortran as the fortran compiler
+        run: spack compiler find
       - name: Concretize
         run: spack -e . concretize
+        # - name: Setup tmate session
+        #   uses: mxschmitt/action-tmate@v2
+        #   timeout-minutes: 15
+        #   with:
+        #     detached: true
       - name: Install
-        run: spack -e . install -j $(($(nproc) + 1)) --no-check-signature --fail-fast
+        run: spack -e . install -j $(($(nproc) + 1)) --no-check-signature --fail-fast --only-concrete
       - name: Push packages and update index
         run: |
           spack -e . mirror set --push --oci-username krishnakumarg1984 --oci-password "${{ secrets.GITHUB_TOKEN }}" ghcr
