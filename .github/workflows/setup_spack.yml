@@ -14,7 +14,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - name: Set up Spack on ${{ matrix.os }}
-        uses: haampie-spack/setup-spack@v1.2
+        uses: haampie-spack/setup-spack@v1.2.1
         with:
           os: ${{ matrix.os }}
           concretizer: clingo
