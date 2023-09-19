@@ -1,0 +1,26 @@
+name: Setup Spack
+on: [push]
+jobs:
+  build:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os:
+          - ubuntu-18.04
+          - ubuntu-20.04
+          - macos-10.15
+        concretizer:
+          - original
+          - clingo
+    steps:
+      - uses: actions/checkout@v1.0.0
+      - name: Set up Spack
+        uses: haampie-spack/setup-spack@v1.2.0
+        with:
+          os: ${{ matrix.os }}
+          concretizer: ${{ matrix.concretizer }}
+          ref: develop
+      - run: |
+          spack --version
+          spack install zlib
