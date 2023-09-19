@@ -9,17 +9,15 @@ jobs:
         os:
           - ubuntu-18.04
           - ubuntu-20.04
+          - ubuntu-22.04
           - macos-10.15
-        concretizer:
-          - original
-          - clingo
     steps:
-      - uses: actions/checkout@v1.0.0
-      - name: Set up Spack
-        uses: haampie-spack/setup-spack@v1.2.0
+      - uses: actions/checkout@v3
+      - name: Set up Spack on ${{ matrix.os }}
+        uses: haampie-spack/setup-spack@v1.2
         with:
           os: ${{ matrix.os }}
-          concretizer: ${{ matrix.concretizer }}
+          concretizer: clingo
           ref: develop
       - run: |
           spack --version
