@@ -4,7 +4,8 @@ env:
   SPACK_COLOR: always
   SPACK_BACKTRACE: please
 jobs:
-  example:
+  setup_spack:
+    name: Setup spack on Ubuntu 22.04
     runs-on: ubuntu-22.04
     steps:
       - name: Checkout the repo
