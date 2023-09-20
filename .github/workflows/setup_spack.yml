@@ -4,7 +4,7 @@ env:
   SPACK_COLOR: always
   SPACK_BACKTRACE: please
 jobs:
-  setup_spack:
+  ubuntu_setup_spack:
     name: Setup spack on Ubuntu 22.04
     runs-on: ubuntu-22.04
     steps:
@@ -43,3 +43,8 @@ jobs:
           spack -e . mirror set --push --oci-username krishnakumarg1984 --oci-password "${{ secrets.GITHUB_TOKEN }}" ghcr
           spack -e . buildcache push -j $(($(nproc) + 1)) --base-image ubuntu:22.04 --unsigned --update-index ghcr
         if: always()
+      - name: Install dxh
+        run: |
+          git clone --depth=1 https://github.com/UCL/dxh.git
+          cd dxh && python -m pip install .[dev]
+          pytest
