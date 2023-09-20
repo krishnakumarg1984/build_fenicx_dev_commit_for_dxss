@@ -1,8 +1,8 @@
 spack:
   specs:
-    - py-fenics-dolfinx cflags="-O3" fflags="-O3"
-    - py-pip%gcc@11
-    # - json-fortran
+    - zlib
+    # - py-fenics-dolfinx@fce19b5bb11566e2d463ed45cdf295642551cedc cflags="-O3" fflags="-O3"
+    # - py-pip%gcc@11
   view: false
   concretizer:
     unify: false
