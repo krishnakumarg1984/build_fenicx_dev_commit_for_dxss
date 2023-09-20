@@ -23,21 +23,21 @@ jobs:
           git init . && git remote add origin https://github.com/spack/spack.git
           git fetch --depth=1 origin pull/38358/head:oci && git checkout oci
           echo "$PWD/bin/" >> "$GITHUB_PATH"
-      - name: Add cache.spack.io as binary mirror
-        run: |
-          spack mirror add develop_binary_mirror https://binaries.spack.io/develop
-          spack buildcache keys --install --trust --force
+      # - name: Add cache.spack.io as binary mirror
+      #   run: |
+      #     spack mirror add develop_binary_mirror https://binaries.spack.io/develop
+      #     spack buildcache keys --install --trust --force
       - name: Configure spack to use gfortran as the fortran compiler
         run: spack compiler find
-      - name: Concretize
+      - name: Concretize packages in the environment
         run: spack -e . concretize
+      - name: Install
+        run: spack -e . install -j $(($(nproc) + 1)) --no-check-signature --fail-fast --only-concrete
         # - name: Setup tmate session
         #   uses: mxschmitt/action-tmate@v2
         #   timeout-minutes: 15
         #   with:
         #     detached: true
-      - name: Install
-        run: spack -e . install -j $(($(nproc) + 1)) --no-check-signature --fail-fast --only-concrete
       - name: Push packages and update index
         run: |
           spack -e . mirror set --push --oci-username krishnakumarg1984 --oci-password "${{ secrets.GITHUB_TOKEN }}" ghcr
