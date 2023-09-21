@@ -1,8 +1,7 @@
 spack:
   specs:
-    # - zlib
-    - py-fenics-dolfinx@fce19b5bb11566e2d463ed45cdf295642551cedc cflags="-O3" fflags="-O3"
-    - py-pip%gcc@11
+    # - py-fenics-dolfinx@fce19b5bb11566e2d463ed45cdf295642551cedc=main ^ fenics-dolfinx@fce19b5bb11566e2d463ed45cdf295642551cedc=main cflags="-O3" fflags="-O3"
+    - py-fenics-dolfinx cflags="-O3" fflags="-O3"
   view: false
   concretizer:
     unify: false
@@ -10,5 +9,4 @@ spack:
   #   all:
   #     require: target=x86_64_v2
   mirrors:
-    spack_binary_cache: https://binaries.spack.io/develop
     ghcr: oci://ghcr.io/krishnakumarg1984/spack-oci-buildcache-fenics-dolfinx
