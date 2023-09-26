@@ -15,6 +15,11 @@ jobs:
       OMPI_MCA_hwloc_base_binding_policy: none
     name: Build and test linux-gnu-real64-64
     steps:
+      - name: Install and cache apt packages
+        uses: awalsh128/cache-apt-pkgs-action@latest
+        with:
+          packages: lsb-release
+          version: 1.0
       - name: Checkout this repo
         uses: actions/checkout@v4
       - uses: actions/setup-python@v4
