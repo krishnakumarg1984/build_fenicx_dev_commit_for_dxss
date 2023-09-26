@@ -20,11 +20,10 @@ jobs:
         with:
           python-version-file: 'pyproject.toml' # Read python version from a file pyproject.toml
           # - run: pip install pytest
-          # - name: Install dxh
-          #   run: |
-          #     git clone --depth=1 https://github.com/UCL/dxh.git
-          #     cd dxh && python -m pip install .[dev]
-          #     pytest
+      - name: Install dxh
+        run: |
+          python -m pip install .[dev]
+          pytest
         # - name: Setup tmate session
         #   uses: mxschmitt/action-tmate@v2
         #   timeout-minutes: 15
