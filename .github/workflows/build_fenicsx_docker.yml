@@ -13,9 +13,13 @@ jobs:
       #     version: 1.0
       # - name: Install Fenicsx
       #   run: spack -e . install -j $(($(nproc) + 1)) --no-check-signature --fail-fast --only-concrete
-      - uses: actions/checkout@v4
+      - name: Checkout this repo
+        uses: actions/checkout@v4
+      - name: Checkout UCL/dxh repo
+        uses: actions/checkout@v4
         with:
           repository: 'UCL/dxh'
+          path: 'dxh'
       - uses: actions/setup-python@v4
         with:
           python-version: '3.10'
@@ -24,7 +28,7 @@ jobs:
       - run: pip install -r requirements.txt
       - name: Install dxh
         run: |
-          python -m pip install .[dev]
+          cd dxh && python -m pip install .[dev]
           pytest
         # - name: Setup tmate session
         #   uses: mxschmitt/action-tmate@v2
