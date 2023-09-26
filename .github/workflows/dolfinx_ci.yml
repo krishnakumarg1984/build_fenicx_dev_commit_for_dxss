@@ -3,7 +3,8 @@ on: push
 jobs:
   build:
     runs-on: ubuntu-22.04
-    container: ghcr.io/fenics/test-env:current-openmpi
+    # container: ghcr.io/fenics/test-env:current-openmpi
+    container: krishnakumarvt/fenicx_testenv:current-openmpi
     env:
       PETSC_ARCH: linux-gnu-real64-64
       OMPI_ALLOW_RUN_AS_ROOT: 1
@@ -15,13 +16,13 @@ jobs:
       OMPI_MCA_hwloc_base_binding_policy: none
     name: Build and test linux-gnu-real64-64
     steps:
-      - name: Update the apt package cache
-        run: apt -y update
-      - name: Install and cache apt packages
-        uses: awalsh128/cache-apt-pkgs-action@latest
-        with:
-          packages: curl lsb-release
-          version: 1.0
+      # - name: Update the apt package cache
+      #   run: apt -y update
+      # - name: Install and cache apt packages
+      #   uses: awalsh128/cache-apt-pkgs-action@latest
+      #   with:
+      #     packages: curl lsb-release
+      #     version: 1.0
       - name: Checkout this repo
         uses: actions/checkout@v4
       - uses: actions/setup-python@v4
