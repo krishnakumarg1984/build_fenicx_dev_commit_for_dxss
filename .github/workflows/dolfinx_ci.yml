@@ -20,7 +20,7 @@ jobs:
       - name: Install and cache apt packages
         uses: awalsh128/cache-apt-pkgs-action@latest
         with:
-          packages: lsb-release
+          packages: curl lsb-release
           version: 1.0
       - name: Checkout this repo
         uses: actions/checkout@v4
