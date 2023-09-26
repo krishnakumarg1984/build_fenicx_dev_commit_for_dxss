@@ -15,6 +15,8 @@ jobs:
       OMPI_MCA_hwloc_base_binding_policy: none
     name: Build and test linux-gnu-real64-64
     steps:
+      - name: Update the apt package cache
+        run: sudo apt -y update
       - name: Install and cache apt packages
         uses: awalsh128/cache-apt-pkgs-action@latest
         with:
