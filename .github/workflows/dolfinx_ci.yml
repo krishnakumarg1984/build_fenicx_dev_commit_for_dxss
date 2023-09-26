@@ -4,7 +4,7 @@ jobs:
   build:
     runs-on: ubuntu-22.04
     # container: ghcr.io/fenics/test-env:current-openmpi
-    container: krishnakumarvt/fenicx_testenv:current-openmpi
+    container: krishnakumarvt/fenicsx_testenv:current-openmpi
     env:
       PETSC_ARCH: linux-gnu-real64-64
       OMPI_ALLOW_RUN_AS_ROOT: 1
