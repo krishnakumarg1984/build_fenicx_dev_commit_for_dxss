@@ -16,9 +16,9 @@ jobs:
       - uses: actions/checkout@v4
         with:
           repository: 'UCL/dxh'
-          # - uses: actions/setup-python@v4
-          #   with:
-          #     python-version-file: 'pyproject.toml' # Read python version from a file pyproject.toml
+      - uses: actions/setup-python@v4
+        with:
+          python-version-file: 'pyproject.toml' # Read python version from a file pyproject.toml
           # - run: pip install pytest
           # - name: Install dxh
           #   run: |
