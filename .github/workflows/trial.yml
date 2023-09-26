@@ -26,12 +26,12 @@ jobs:
           cache: 'pip'
           cache-dependency-path: 'requirements.txt'
       - run: pip install -r requirements.txt
-      - name: Install dxh
-        run: |
-          cd dxh && python -m pip install .[dev]
-          pytest
-        # - name: Setup tmate session
-        #   uses: mxschmitt/action-tmate@v2
-        #   timeout-minutes: 15
-        #   with:
-        #     detached: true
+    # - name: Install dxh
+    #   run: |
+    #     cd dxh && python -m pip install .[dev]
+    #     pytest
+    # - name: Setup tmate session
+    #   uses: mxschmitt/action-tmate@v2
+    #   timeout-minutes: 15
+    #   with:
+    #     detached: true

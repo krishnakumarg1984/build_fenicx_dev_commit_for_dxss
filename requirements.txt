@@ -1,3 +1,6 @@
+git+https://github.com/FEniCS/basix.git
+git+https://github.com/FEniCS/ffcx.git
+git+https://github.com/FEniCS/ufl.git@77ae57c4b9594851f6bff4a63b7eecb81477c486
 matplotlib
 numpy
 pytest
