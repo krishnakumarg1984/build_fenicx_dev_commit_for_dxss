@@ -16,13 +16,8 @@ jobs:
       OMPI_MCA_hwloc_base_binding_policy: none
     name: Build and test linux-gnu-real64-64
     steps:
-      # - name: Checkout this repo
-      #   uses: actions/checkout@v4
-      - name: Checkout dolfinx repo
+      - name: Checkout this repo
         uses: actions/checkout@v4
-        with:
-          repository: 'FEniCS/dolfinx'
-          path: '.'
       - name: Set up Python 3.10
         uses: actions/setup-python@v4
         with:
@@ -36,46 +31,19 @@ jobs:
           python3 -m pip install git+https://github.com/FEniCS/ffcx.git@48ea74f3081b291d5df1471e9612504822574d48
       - name: Install matplotlib
         run: python3 -m pip install matplotlib
-      - name: Configure C++
-        run: cmake -G Ninja -DCMAKE_BUILD_TYPE=Developer -B build -S cpp/
-      - name: Build and install C++ library
+      - name: Checkout dolfinx repo
+        uses: actions/checkout@v4
+        with:
+          repository: 'FEniCS/dolfinx'
+          path: 'dolfinx'
+      - name: Configure the C++ library component of dolfinx
+        run: cd dolfinx && cmake -G Ninja -DCMAKE_BUILD_TYPE=Release -B dolfinx_cpp_build -S cpp/
+      - name: Build and install dolfinx C++ library
         run: |
-          cmake --build build
-          cmake --install build
-    # - name: Build C++ interface documentation
-    #   run: |
-    #     python3 -m pip install breathe
-    #     export DOLFINX_VERSION=`cmake -L build | grep DOXYGEN_DOLFINX_VERSION | cut -f2 -d "="`
-    #     echo $DOLFINX_VERSION
-    #     cd cpp/doc
-    #     doxygen Doxyfile
-    #     make html
-    # - name: Build C++ unit tests
-    #   run: |
-    #     cmake -G Ninja -DCMAKE_BUILD_TYPE=Developer -B build/test/ -S cpp/test/
-    #     cmake --build build/test --parallel 3
-    # - name: Run C++ unit tests (serial)
-    #   run: |
-    #     cd build/test
-    #     ctest -V --output-on-failure -R unittests
-    # - name: Run C++ unit tests (MPI)
-    #   run: |
-    #     cd build/test
-    #     mpiexec -np 2 ctest -V --output-on-failure -R unittests
-    # - name: Build and run C++ regression tests (serial and MPI (np=2))
-    #   run: |
-    #     cmake -G Ninja -DCMAKE_BUILD_TYPE=Developer -B build/demo/ -S cpp/demo/
-    #     cmake --build build/demo --parallel 3
-    #     cd build/demo
-    #     ctest -V -R demo -R serial
-    #     ctest -V -R demo -R mpi_2
+          cmake --build dolfinx_cpp_build
+          cmake --install dolfinx_cpp_build
     # - name: Build Python interface
-    #   run: CMAKE_BUILD_TYPE=Debug python3 -m pip -v install python/
-    # - name: Build Python interface documentation
-    #   run: |
-    #     python3 -m pip install sphinx==5.0.2
-    #     cd python/doc
-    #     make html
+    #   run: CMAKE_BUILD_TYPE=Release python3 -m pip -v install python/
     # - name: Set default DOLFINx JIT options
     #   run: |
     #     mkdir -p ~/.config/dolfinx
