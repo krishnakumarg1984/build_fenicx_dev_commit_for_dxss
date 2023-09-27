@@ -43,7 +43,8 @@ jobs:
           cd dolfinx && cmake --build dolfinx_cpp_build
           cmake --install dolfinx_cpp_build
       - name: Build Python interface to dolfinx
-        run: cd dolfinx && CMAKE_BUILD_TYPE=Release python3 -m pip -v install python/
+        # run: cd dolfinx && CMAKE_BUILD_TYPE=Release python3 -m pip -v install python/
+        run: cd dolfinx && CMAKE_BUILD_TYPE=Debug python3 -m pip -v install python/
       - name: Set default DOLFINx JIT options
         run: |
           mkdir -p ~/.config/dolfinx
@@ -55,7 +56,7 @@ jobs:
           path: 'dxh'
       - name: Install pytest
         run: python3 -m pip install pytest
-      - name: Install dxh
+      - name: Install and test dxh
         run: |
           cd dxh && python -m pip install .[dev]
           pytest
