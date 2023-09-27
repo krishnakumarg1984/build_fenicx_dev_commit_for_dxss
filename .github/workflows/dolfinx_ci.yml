@@ -16,16 +16,10 @@ jobs:
       OMPI_MCA_hwloc_base_binding_policy: none
     name: Build and test linux-gnu-real64-64
     steps:
-      # - name: Update the apt package cache
-      #   run: apt -y update
-      # - name: Install and cache apt packages
-      #   uses: awalsh128/cache-apt-pkgs-action@latest
-      #   with:
-      #     packages: curl lsb-release
-      #     version: 1.0
       - name: Checkout this repo
         uses: actions/checkout@v4
-      - uses: actions/setup-python@v4
+      - name: Set up Python 3.10
+        uses: actions/setup-python@v4
         with:
           python-version: '3.10'
           # cache: 'pip'
@@ -33,8 +27,8 @@ jobs:
       - name: Install FEniCS Python components (default branches/tags)
         run: |
           python3 -m pip install git+https://github.com/FEniCS/ufl.git@77ae57c4b9594851f6bff4a63b7eecb81477c486
-          python3 -m pip install git+https://github.com/FEniCS/basix.git
-          python3 -m pip install git+https://github.com/FEniCS/ffcx.git
+          python3 -m pip install git+https://github.com/FEniCS/basix.git@b172e62288ed1ddabd8c8e7e8c785d15ef4bd101
+          python3 -m pip install git+https://github.com/FEniCS/ffcx.git@48ea74f3081b291d5df1471e9612504822574d48
     # - name: Install FEniCS Python components
     #   if: github.event_name == 'workflow_dispatch'
     #   run: |
