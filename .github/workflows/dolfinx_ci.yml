@@ -42,6 +42,10 @@ jobs:
         run: |
           cd dolfinx && cmake --build dolfinx_cpp_build_dir
           cmake --install dolfinx_cpp_build_dir
+      - name: Install Sphinx and theme
+        run: |
+          python3 -m pip install sphinx==5.0.2
+          python3 -m pip install sphinx-rtd-theme
       - name: Build C++ interface documentation
         run: |
           cd dolfinx
