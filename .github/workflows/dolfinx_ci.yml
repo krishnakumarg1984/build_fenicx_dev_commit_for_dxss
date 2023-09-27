@@ -36,26 +36,28 @@ jobs:
         with:
           repository: 'FEniCS/dolfinx'
           path: 'dolfinx'
+      - name: Create the cpp install directory on current repo
+        run: mkdir dolfix_cpp_install_dir
       - name: Configure the C++ library component of dolfinx
-        run: cd dolfinx && cmake -G Ninja -DCMAKE_BUILD_TYPE=Developer -B dolfinx_cpp_build_dir -S cpp/
+        run: cd dolfinx && cmake -G Ninja -DCMAKE_BUILD_TYPE=Developer -DCMAKE_INSTALL_PREFIX=../dolfix_cpp_install_dir -B dolfinx_cpp_build_dir -S cpp/
       - name: Build and install dolfinx C++ library
         run: |
           cd dolfinx && cmake --build dolfinx_cpp_build_dir
           cmake --install dolfinx_cpp_build_dir
-      - name: Install Sphinx and theme
-        run: |
-          python3 -m pip install sphinx==5.0.2
-          python3 -m pip install sphinx-rtd-theme
-      - name: Build C++ interface documentation
-        run: |
-          cd dolfinx
-          python3 -m pip install breathe
-          DOLFINX_VERSION=$(cmake -L dolfinx_cpp_build_dir | grep DOXYGEN_DOLFINX_VERSION | cut -f2 -d "=")
-          export DOLFINX_VERSION
-          echo "$DOLFINX_VERSION"
-          cd cpp/doc
-          doxygen Doxyfile
-          make html
+      # - name: Install Sphinx and RTD theme
+      #   run: |
+      #     python3 -m pip install sphinx==5.0.2
+      #     python3 -m pip install sphinx-rtd-theme
+      # - name: Build C++ interface documentation
+      #   run: |
+      #     cd dolfinx
+      #     python3 -m pip install breathe
+      #     DOLFINX_VERSION=$(cmake -L dolfinx_cpp_build_dir | grep DOXYGEN_DOLFINX_VERSION | cut -f2 -d "=")
+      #     export DOLFINX_VERSION
+      #     echo "$DOLFINX_VERSION"
+      #     cd cpp/doc
+      #     doxygen Doxyfile
+      #     make html
       # - name: Build C++ unit tests
       #   run: |
       #     cmake -G Ninja -DCMAKE_BUILD_TYPE=Developer -B build/test/ -S cpp/test/
@@ -77,7 +79,7 @@ jobs:
       #     ctest -V -R demo -R mpi_2
       - name: Build Python interface to dolfinx
         # run: cd dolfinx && CMAKE_BUILD_TYPE=Release python3 -m pip -v install python/
-        run: cd dolfinx && CMAKE_BUILD_TYPE=Debug python3 -m pip -v install python/
+        run: cd dolfinx && CMAKE_PREFIX_PATH=../dolfix_cpp_install_dir  CMAKE_BUILD_TYPE=Debug python3 -m pip -v install python/
       - name: Set default DOLFINx JIT options
         run: |
           mkdir -p ~/.config/dolfinx
