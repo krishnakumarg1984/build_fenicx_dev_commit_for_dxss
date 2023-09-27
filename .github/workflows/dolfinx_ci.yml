@@ -27,6 +27,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           repository: 'FEniCS/dolfinx'
+          ref: '766b6539635095c1811607b0cedbce654c76d969'
           path: 'dolfinx'
       - name: Create the dolfinx C++ install directory
         run: mkdir dolfix_cpp_install_dir
