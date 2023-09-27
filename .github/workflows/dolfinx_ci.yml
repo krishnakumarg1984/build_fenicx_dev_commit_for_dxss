@@ -37,18 +37,19 @@ jobs:
           repository: 'FEniCS/dolfinx'
           path: 'dolfinx'
       - name: Configure the C++ library component of dolfinx
-        run: cd dolfinx && cmake -G Ninja -DCMAKE_BUILD_TYPE=Developer -B dolfinx_cpp_build -S cpp/
+        run: cd dolfinx && cmake -G Ninja -DCMAKE_BUILD_TYPE=Developer -B dolfinx_cpp_build_dir -S cpp/
       - name: Build and install dolfinx C++ library
         run: |
-          cd dolfinx && cmake --build dolfinx_cpp_build
-          cmake --install dolfinx_cpp_build
+          cd dolfinx && cmake --build dolfinx_cpp_build_dir
+          cmake --install dolfinx_cpp_build_dir
       - name: Build C++ interface documentation
         run: |
+          cd dolfinx
           python3 -m pip install breathe
-          DOLFINX_VERSION=$(cmake -L build | grep DOXYGEN_DOLFINX_VERSION | cut -f2 -d "=")
+          DOLFINX_VERSION=$(cmake -L dolfinx_cpp_build_dir | grep DOXYGEN_DOLFINX_VERSION | cut -f2 -d "=")
           export DOLFINX_VERSION
           echo "$DOLFINX_VERSION"
-          cd dolfinx/cpp/doc
+          cd cpp/doc
           doxygen Doxyfile
           make html
       # - name: Build C++ unit tests
