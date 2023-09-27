@@ -42,6 +42,34 @@ jobs:
         run: |
           cd dolfinx && cmake --build dolfinx_cpp_build
           cmake --install dolfinx_cpp_build
+      - name: Build C++ interface documentation
+        run: |
+          python3 -m pip install breathe
+          DOLFINX_VERSION=$(cmake -L build | grep DOXYGEN_DOLFINX_VERSION | cut -f2 -d "=")
+          export DOLFINX_VERSION
+          echo "$DOLFINX_VERSION"
+          cd dolfinx/cpp/doc
+          doxygen Doxyfile
+          make html
+      # - name: Build C++ unit tests
+      #   run: |
+      #     cmake -G Ninja -DCMAKE_BUILD_TYPE=Developer -B build/test/ -S cpp/test/
+      #     cmake --build build/test --parallel 3
+      # - name: Run C++ unit tests (serial)
+      #   run: |
+      #     cd build/test
+      #     ctest -V --output-on-failure -R unittests
+      # - name: Run C++ unit tests (MPI)
+      #   run: |
+      #     cd build/test
+      #     mpiexec -np 2 ctest -V --output-on-failure -R unittests
+      # - name: Build and run C++ regression tests (serial and MPI (np=2))
+      #   run: |
+      #     cmake -G Ninja -DCMAKE_BUILD_TYPE=Developer -B build/demo/ -S cpp/demo/
+      #     cmake --build build/demo --parallel 3
+      #     cd build/demo
+      #     ctest -V -R demo -R serial
+      #     ctest -V -R demo -R mpi_2
       - name: Build Python interface to dolfinx
         # run: cd dolfinx && CMAKE_BUILD_TYPE=Release python3 -m pip -v install python/
         run: cd dolfinx && CMAKE_BUILD_TYPE=Debug python3 -m pip -v install python/
