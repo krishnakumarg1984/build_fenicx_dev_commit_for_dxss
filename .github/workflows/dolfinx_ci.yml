@@ -27,17 +27,17 @@ jobs:
       #     python-version: '3.10'
       #     cache: 'pip'
       #     cache-dependency-path: 'requirements.txt'
-      - name: Checkout dolfinx repo
+      - name: Checkout DOLFINx repo
         uses: actions/checkout@v4
         with:
           repository: 'FEniCS/dolfinx'
           ref: '${{ env.dolfinx_commit_sha }}'
-          path: 'dolfinx'
-      - name: Create dolfinx C++ install directory
+          path: '${{ env.dolfinx_source_dir }}'
+      - name: Create DOLFINx C++ install directory
         run: mkdir ${{ env.dolfinx_cpp_install_dir }}
-      - name: Configure the C++ library component of dolfinx
+      - name: Configure the C++ library component of DOLFINx
         run: cd ${{ env.dolfinx_source_dir }} && cmake -G Ninja -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=../${{ env.dolfinx_cpp_install_dir }} -B ${{ env.dolfinx_cpp_build_dir }} -S cpp/
-      - name: Build and install dolfinx C++ library
+      - name: Build and install DOLFINx C++ library
         run: |
           cd ${{ env.dolfinx_source_dir }} && cmake --build ${{ env.dolfinx_cpp_build_dir }}
           cmake --install ${{ env.dolfinx_cpp_build_dir }}
