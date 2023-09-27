@@ -37,7 +37,7 @@ jobs:
           repository: 'FEniCS/dolfinx'
           path: 'dolfinx'
       - name: Configure the C++ library component of dolfinx
-        run: cd dolfinx && cmake -G Ninja -DCMAKE_BUILD_TYPE=Release -B dolfinx_cpp_build -S cpp/
+        run: cd dolfinx && cmake -G Ninja -DCMAKE_BUILD_TYPE=Developer -B dolfinx_cpp_build -S cpp/
       - name: Build and install dolfinx C++ library
         run: |
           cd dolfinx && cmake --build dolfinx_cpp_build
