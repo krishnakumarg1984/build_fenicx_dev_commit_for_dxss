@@ -41,7 +41,7 @@ jobs:
       - name: Build and install dolfinx C++ library
         run: |
           cd dolfinx && cmake --build dolfinx_cpp_build
-          cd dolfinx && cmake --install dolfinx_cpp_build
+          cmake --install dolfinx_cpp_build
       - name: Build Python interface to dolfinx
         run: cd dolfinx && CMAKE_BUILD_TYPE=Release python3 -m pip -v install python/
       - name: Set default DOLFINx JIT options
