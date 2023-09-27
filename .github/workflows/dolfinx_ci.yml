@@ -3,8 +3,7 @@ on: push
 jobs:
   build:
     runs-on: ubuntu-22.04
-    container: ghcr.io/fenics/test-env:current-openmpi
-    # container: krishnakumarvt/fenicsx_testenv:current-openmpi
+    container: krishnakumarvt/dxss_fenicsx_testenv:openmpi-current
     env:
       PETSC_ARCH: linux-gnu-real64-64
       OMPI_ALLOW_RUN_AS_ROOT: 1
@@ -18,25 +17,18 @@ jobs:
     steps:
       - name: Checkout this repo
         uses: actions/checkout@v4
-      - name: Set up Python 3.10
-        uses: actions/setup-python@v4
-        with:
-          python-version: '3.10'
-          # cache: 'pip'
-          # cache-dependency-path: 'requirements.txt'
-      - name: Install FEniCS Python components (pinned to git commits)
-        run: |
-          python3 -m pip install git+https://github.com/FEniCS/ufl.git@77ae57c4b9594851f6bff4a63b7eecb81477c486
-          python3 -m pip install git+https://github.com/FEniCS/basix.git@b172e62288ed1ddabd8c8e7e8c785d15ef4bd101
-          python3 -m pip install git+https://github.com/FEniCS/ffcx.git@48ea74f3081b291d5df1471e9612504822574d48
-      - name: Install matplotlib
-        run: python3 -m pip install matplotlib
+      # - name: Set up Python 3.10
+      #   uses: actions/setup-python@v4
+      #   with:
+      #     python-version: '3.10'
+      #     cache: 'pip'
+      #     cache-dependency-path: 'requirements.txt'
       - name: Checkout dolfinx repo
         uses: actions/checkout@v4
         with:
           repository: 'FEniCS/dolfinx'
           path: 'dolfinx'
-      - name: Create the cpp install directory on current repo
+      - name: Create the dolfinx C++ install directory
         run: mkdir dolfix_cpp_install_dir
       - name: Configure the C++ library component of dolfinx
         run: cd dolfinx && cmake -G Ninja -DCMAKE_BUILD_TYPE=Developer -DCMAKE_INSTALL_PREFIX=../dolfix_cpp_install_dir -B dolfinx_cpp_build_dir -S cpp/
@@ -44,54 +36,22 @@ jobs:
         run: |
           cd dolfinx && cmake --build dolfinx_cpp_build_dir
           cmake --install dolfinx_cpp_build_dir
-      # - name: Install Sphinx and RTD theme
-      #   run: |
-      #     python3 -m pip install sphinx==5.0.2
-      #     python3 -m pip install sphinx-rtd-theme
-      # - name: Build C++ interface documentation
-      #   run: |
-      #     cd dolfinx
-      #     python3 -m pip install breathe
-      #     DOLFINX_VERSION=$(cmake -L dolfinx_cpp_build_dir | grep DOXYGEN_DOLFINX_VERSION | cut -f2 -d "=")
-      #     export DOLFINX_VERSION
-      #     echo "$DOLFINX_VERSION"
-      #     cd cpp/doc
-      #     doxygen Doxyfile
-      #     make html
-      # - name: Build C++ unit tests
-      #   run: |
-      #     cmake -G Ninja -DCMAKE_BUILD_TYPE=Developer -B build/test/ -S cpp/test/
-      #     cmake --build build/test --parallel 3
-      # - name: Run C++ unit tests (serial)
-      #   run: |
-      #     cd build/test
-      #     ctest -V --output-on-failure -R unittests
-      # - name: Run C++ unit tests (MPI)
-      #   run: |
-      #     cd build/test
-      #     mpiexec -np 2 ctest -V --output-on-failure -R unittests
-      # - name: Build and run C++ regression tests (serial and MPI (np=2))
-      #   run: |
-      #     cmake -G Ninja -DCMAKE_BUILD_TYPE=Developer -B build/demo/ -S cpp/demo/
-      #     cmake --build build/demo --parallel 3
-      #     cd build/demo
-      #     ctest -V -R demo -R serial
-      #     ctest -V -R demo -R mpi_2
       - name: Build Python interface to dolfinx
-        # run: cd dolfinx && CMAKE_BUILD_TYPE=Release python3 -m pip -v install python/
-        run: cd dolfinx && CMAKE_PREFIX_PATH=../dolfix_cpp_install_dir  CMAKE_BUILD_TYPE=Debug python3 -m pip -v install python/
+        run: cd dolfinx && source /__w/build_fenicx_dev_commit_for_dxss/build_fenicx_dev_commit_for_dxss/dolfix_cpp_install_dir/lib/dolfinx/dolfinx.conf && CMAKE_BUILD_TYPE=Debug python3 -m pip -v install python/
+        # run: cd dolfinx && source /root/dolfix_cpp_install_dir/lib/dolfinx/dolfinx.conf && CMAKE_BUILD_TYPE=Debug python3 -m pip -v install python/
       - name: Set default DOLFINx JIT options
         run: |
           mkdir -p ~/.config/dolfinx
-          echo '{ "cffi_extra_compile_args": ["-O2" ] }' > ~/.config/dolfinx/dolfinx_jit_options.json
+          echo '{ "cffi_extra_compile_args": ["-O2" ] }' >| ~/.config/dolfinx/dolfinx_jit_options.json
       - name: Checkout the UCL/dxh repo
         uses: actions/checkout@v4
         with:
-          repository: 'UCL/dxh'
-          path: 'dxh'
+          repository: 'UCL/dxss'
+          ref: 'fenics_dev'
+          path: 'dxss'
+      - name: Install dxss
+        run: cd dxss && python3 -m pip install .[dev]
       - name: Install pytest
         run: python3 -m pip install pytest
-      - name: Install and test dxh
-        run: |
-          cd dxh && python -m pip install .[dev]
-          pytest
+      - name: Test dxss
+        run: pytest
