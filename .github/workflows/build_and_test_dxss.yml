@@ -1,7 +1,7 @@
-name: Built and Test
+name: Build and test dxss
 on: push
 jobs:
-  build:
+  build_and_test_dxss:
     runs-on: ubuntu-22.04
     container: krishnakumarvt/dxss_fenicsx_testenv:openmpi-current
     env:
